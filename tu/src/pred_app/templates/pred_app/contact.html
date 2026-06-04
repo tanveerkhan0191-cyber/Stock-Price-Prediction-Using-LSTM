@@ -1,0 +1,130 @@
+{% extends "pred_app/base.html" %}
+{% load static %}
+
+{% block nav %}
+<li><a href="index">Home</a></li>
+<li><a href="pred">Prediction</a></li>
+<li class="active"><a href="contact">Contact Us</a></li>
+{% endblock nav %}
+
+{% block content %}
+
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #1e3c72, #2a5298, #0f2027);
+    background-size: 400% 400%;
+    animation: bg 10s ease infinite;
+    color: white;
+}
+
+@keyframes bg {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+
+.content {
+    max-width: 600px;
+    margin: 60px auto;
+}
+
+.article {
+    background: rgba(255,255,255,0.08);
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: fade 0.8s ease;
+}
+
+@keyframes fade {
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
+}
+
+.article h2 {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.text, textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    margin-top: 5px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.text:focus, textarea:focus {
+    box-shadow: 0 0 10px #00c6ff;
+    transform: scale(1.02);
+}
+
+label {
+    font-size: 14px;
+}
+
+.send {
+    margin-top: 15px;
+    width: 120px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.send:hover {
+    transform: scale(1.1);
+}
+</style>
+
+<div class="content">
+
+    <div class="article">
+        <h2><span>To Contact Us</span></h2>
+        <div class="clr"></div>
+    </div>
+
+    <div class="article">
+        <h2><span>Send us</span> mail</h2>
+        <div class="clr"></div>
+
+        <form action="#" id="sendemail" method="post">
+            {% csrf_token %}
+
+            <ol>
+                <li>
+                    <label for="name">Name (required)</label>
+                    <input class="text" id="name" name="name" required>
+                </li>
+
+                <li>
+                    <label for="email">Email Address (required)</label>
+                    <input class="text" id="email" name="email" required>
+                </li>
+
+                <li>
+                    <label for="website">Website</label>
+                    <input class="text" id="website" name="website">
+                </li>
+
+                <li>
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" rows="6" required></textarea>
+                </li>
+
+                <li style="text-align:center;">
+                    <input class="send"
+                           src="{% static 'pred_app/img/submit.gif' %}"
+                           type="image">
+                </li>
+            </ol>
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock content %}

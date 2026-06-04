@@ -1,0 +1,222 @@
+{% extends "pred_app/base.html" %}
+{% load static %}
+
+{% block nav %}
+<li><a href="index">Home</a></li>
+<li class="active"><a href="pred">Prediction</a></li>
+<li><a href="contact">Contact Us</a></li>
+{% endblock nav %}
+
+{% block content %}
+
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #0f2027, #2c5364, #1e3c72, #2a5298);
+    background-size: 400% 400%;
+    animation: gradientBG 12s ease infinite;
+    color: white;
+    overflow-x: hidden;
+}
+
+.content {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes gradientBG {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+.card-box {
+    width: 90%;
+    max-width: 500px;
+    padding: 40px;
+    border-radius: 25px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+}
+
+h2 { margin-bottom: 20px; }
+
+#typeahead {
+    width: 100%;
+    padding: 15px;
+    border-radius: 50px;
+    border: none;
+    outline: none;
+    text-align: center;
+    font-size: 16px;
+    transition: 0.3s;
+    color: black;
+}
+
+#typeahead:focus {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px white;
+}
+
+.gadget { margin-bottom: 20px; }
+
+.gadget input {
+    padding: 10px;
+    border-radius: 25px;
+    border: none;
+}
+
+.gadget input[type="submit"] {
+    background: orange;
+    color: white;
+}
+
+.suggestions {
+    background: white;
+    color: black;
+    border-radius: 10px;
+    margin-top: 5px;
+    display: none;
+}
+
+.suggestions div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggestions div:hover {
+    background: #eee;
+}
+
+.loader {
+    display: none;
+    margin-top: 15px;
+}
+
+.loader div {
+    width: 10px;
+    height: 10px;
+    background: white;
+    display: inline-block;
+    margin: 5px;
+    border-radius: 50%;
+    animation: bounce 0.6s infinite alternate;
+}
+
+.loader div:nth-child(2){animation-delay:0.2s;}
+.loader div:nth-child(3){animation-delay:0.4s;}
+
+@keyframes bounce {
+    to { transform: translateY(-10px); }
+}
+
+@keyframes fadeIn {
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
+}
+</style>
+
+<div class="content">
+
+    <!-- GOOGLE SEARCH -->
+    <div class="gadget">
+        <form action="http://www.google.com/search" target="_blank" method="get">
+            <input name="q" type="text" placeholder="🌐 Search Google...">
+            <input type="submit" value="Search">
+        </form>
+    </div>
+
+    <!-- CARD -->
+    <div class="card-box">
+        <h2>📈 Real Time Stock Prediction</h2>
+
+        <!-- 🔥 FORM -->
+        <form method="POST" id="search">
+            {% csrf_token %}
+
+            <input id="typeahead"
+                   name="stock"
+                   class="form-control typeahead"
+                   placeholder="🔍 Enter Stock Symbol..."
+                   type="text"
+                   required>
+
+            <div id="suggestions" class="suggestions"></div>
+
+            <br>
+
+            <button type="submit" style="
+                padding:10px 20px;
+                border:none;
+                border-radius:10px;
+                background:#00c6ff;
+                color:white;
+                cursor:pointer;
+            ">
+                🚀 Predict
+            </button>
+
+            <div id="loader" class="loader">
+                <div></div><div></div><div></div>
+            </div>
+        </form>
+
+        <!-- 🔥 RESULT -->
+        {% if result %}
+        <div style="margin-top:30px; text-align:center;">
+            <h3>📊 Prediction Result</h3>
+
+            {% if result.error %}
+                <p style="color:red;">{{ result.error }}</p>
+            {% else %}
+                <p><b>Date:</b> {{ result.Date }}</p>
+                <p><b>Price:</b> ₹{{ result.Close }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+const input = document.getElementById("typeahead");
+const suggestionsBox = document.getElementById("suggestions");
+
+const stocks = ["AAPL","GOOGL","MSFT","TSLA","AMZN","TCS","INFY","RELIANCE"];
+
+input.addEventListener("input", function() {
+    let value = this.value.toUpperCase();
+    suggestionsBox.innerHTML = "";
+
+    if (!value) {
+        suggestionsBox.style.display = "none";
+        return;
+    }
+
+    stocks.filter(s => s.includes(value)).forEach(item => {
+        let div = document.createElement("div");
+        div.innerText = item;
+        div.onclick = () => {
+            input.value = item;
+            suggestionsBox.style.display = "none";
+        };
+        suggestionsBox.appendChild(div);
+    });
+
+    suggestionsBox.style.display = "block";
+});
+
+document.getElementById("search").addEventListener("submit", function() {
+    document.getElementById("loader").style.display = "block";
+});
+</script>
+
+{% endblock content %}

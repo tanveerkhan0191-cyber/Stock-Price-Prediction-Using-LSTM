@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <title>Real Time Stock Prediction </title>
+
+    <meta charset="utf-8">
+
+    <link href="{% static 'pred_app/css/bootstrap.css' %}" rel="stylesheet">
+
+    <script src="{% static 'pred_app/js/jquery.1.11.1.js' %}"></script>
+    <script src="{% static 'pred_app/js/bootstrap.js'%}"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #0f2027, #2c5364, #1e3c72, #2a5298);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+            color: white;
+        }
+
+        @keyframes gradientBG {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0,0,0,0.6);
+        }
+
+        .logo h1 {
+            margin: 0;
+        }
+
+        /* NAVBAR */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .nav-links li a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+        .nav-links li a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* auth */
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+            margin-left: 20px;
+        }
+
+        .register-btn {
+            background: #ff7b00;
+            color: white !important;
+        }
+
+        /* footer */
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="logo">
+        <h1>
+            <a href="index">
+                <span style="color:#00ffcc;">Real Time  </span>
+                <span style="color:#ffcc00;">Stock Prediction</span>
+            </a>
+        </h1>
+    </div>
+
+    <div class="menu_nav">
+        <ul class="nav-links">
+
+            {% block nav %}{% endblock %}
+
+            <div class="auth-buttons">
+               {% if user.is_authenticated %}
+    <li>{{ user.username }}</li>
+
+    <li>
+        <form action="{% url 'logout' %}" method="POST" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" style="background:none; border:none; color:white;">
+                Logout
+            </button>
+        </form>
+    </li>
+{% else %}
+    <li><a href="{% url 'login' %}">Login</a></li>
+    <li><a href="{% url 'register' %}">Register</a></li>
+{% endif %}
+            </div>
+
+        </ul>
+    </div>
+</div>
+
+{% block content %}{% endblock %}
+
+<div class="footer">
+    © Real Time Stock Prediction 
+</div>
+
+</body>
+</html>
